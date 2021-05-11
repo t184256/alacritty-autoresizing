@@ -33,14 +33,20 @@ def main():
                          stdout=subprocess.PIPE)
 
     prev_params = None
+    width, height, scale_factor = None, None, 1
     while True:
         l = p.stdout.readline()
         if not l:
             break
-        m = re.search(rb'PhysicalSize { width: (\d+), height: (\d+) }', l)
-        if m:
-            width, height = int(m.group(1)), int(m.group(2))
-            params = runpy.run_path(resizing_config)['font'](width, height)
+        ms = re.search(rb'ScaleFactorChanged { scale_factor: ([\d\.+])', l)
+        md = re.search(rb'PhysicalSize { width: (\d+), height: (\d+) }', l)
+        if md:
+            width, height = int(md.group(1)), int(md.group(2))
+        if ms:
+            scale_factor = int(ms.group(1))
+        if (ms or md) and width and height:
+            param_func = runpy.run_path(resizing_config)['font']
+            params = param_func(width, height, scale_factor)
             if params != prev_params:
                 with open(output_config_path, 'w') as output_config_file:
                     cfg['font'].update(params)
