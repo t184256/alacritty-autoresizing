@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import os
 import re
 import runpy
 import subprocess
@@ -52,3 +53,4 @@ def main():
                     cfg['font'].update(params)
                     yaml.dump(cfg, output_config_file)
             prev_params = params
+    os.unlink(output_config_path)
