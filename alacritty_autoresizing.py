@@ -17,14 +17,18 @@ def main():
     resizing_config = find_config('alacritty', 'autoresizing.cfg.py')
     assert base_config is not None
     assert resizing_config is not None
+    output_config_path = tempfile.NamedTemporaryFile(delete=False).name
 
     with open(base_config) as f:
         yaml = ruamel.yaml.YAML(typ='safe')
         cfg = yaml.load(f)
 
-    with tempfile.NamedTemporaryFile(delete=False) as output_config:
-        output_config.write(b'live_config_reload: true')
-        output_config_path = output_config.name
+    def update_config(font_params):
+        with open(output_config_path, 'w') as output_config_file:
+            cfg['font'].update(font_params)
+            yaml.dump(cfg, output_config_file)
+
+    update_config({})
 
     p = subprocess.Popen(['alacritty',
                           '-o', 'live_config_reload=true',
@@ -49,9 +53,7 @@ def main():
             param_func = runpy.run_path(resizing_config)['font']
             params = param_func(width, height, scale_factor)
             if params != prev_params:
-                with open(output_config_path, 'w') as output_config_file:
-                    cfg['font'].update(params)
-                    yaml.dump(cfg, output_config_file)
+                update_config(params)
             prev_params = params
     os.unlink(output_config_path)
 
