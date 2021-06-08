@@ -54,3 +54,7 @@ def main():
                     yaml.dump(cfg, output_config_file)
             prev_params = params
     os.unlink(output_config_path)
+
+
+if __name__ == '__main__':
+    main()
