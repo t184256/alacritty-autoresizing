@@ -17,7 +17,8 @@ def main():
     resizing_config = find_config('alacritty', 'autoresizing.cfg.py')
     assert base_config is not None
     assert resizing_config is not None
-    output_config_path = tempfile.NamedTemporaryFile(delete=False).name
+    output_config_path = tempfile.NamedTemporaryFile(prefix='alacritty.',
+                                                     delete=False).name
 
     with open(base_config) as f:
         yaml = ruamel.yaml.YAML(typ='safe')
@@ -39,10 +40,15 @@ def main():
 
     prev_params = None
     width, height, scale_factor = None, None, 1
+    logfile_killed = False
     while True:
         l = p.stdout.readline()
         if not l:
             break
+        if not logfile_killed:
+            os.symlink('/dev/null', f'/tmp/{p.pid}.tmp')
+            os.replace(f'/tmp/{p.pid}.tmp', f'/tmp/Alacritty-{p.pid}.log')
+            logfile_killed = True
         ms = re.search(rb'ScaleFactorChanged { scale_factor: ([\d\.+])', l)
         md = re.search(rb'PhysicalSize { width: (\d+), height: (\d+) }', l)
         if md:
