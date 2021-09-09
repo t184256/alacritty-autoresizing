@@ -19,7 +19,16 @@
               python3Packages.ruamel_yaml
             ];
           };
-          defaultPackage = alacrittyAutoresizing;
+          alacrittyAutoresizingEnv = pkgs.python3.buildEnv.override {
+            extraLibs = [ alacrittyAutoresizing ];
+          };
+          alacrittyAutoresizingNoPython = pkgs.writeShellScriptBin
+            "alacritty-autoresizing"
+            ''
+              exec ${alacrittyAutoresizingEnv}/bin/python3 \
+                   -m alacritty_autoresizing "$@"
+            '';
+          defaultPackage = alacrittyAutoresizingNoPython;
           devShell = import ./shell.nix { inherit pkgs; };
         }
       );
