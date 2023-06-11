@@ -49,13 +49,16 @@ def main():
             os.symlink('/dev/null', f'/tmp/{p.pid}.tmp')
             os.replace(f'/tmp/{p.pid}.tmp', f'/tmp/Alacritty-{p.pid}.log')
             logfile_killed = True
-        ms = re.search(rb'ScaleFactorChanged { scale_factor: ([\d\.+])', l)
+        ms1 = re.search(rb'Window scale factor: ([\d\.+])', l)
+        ms2 = re.search(rb'ScaleFactorChanged { scale_factor: ([\d\.+])', l)
         md = re.search(rb'PhysicalSize { width: (\d+), height: (\d+) }', l)
         if md:
             width, height = int(md.group(1)), int(md.group(2))
-        if ms:
-            scale_factor = int(ms.group(1))
-        if (ms or md) and width and height:
+        if ms1:
+            scale_factor = int(ms1.group(1))
+        if ms2:
+            scale_factor = int(ms2.group(1))
+        if (ms1 or ms2 or md) and width and height:
             param_func = runpy.run_path(resizing_config)['font']
             params = param_func(width, height, scale_factor)
             if params != prev_params:
