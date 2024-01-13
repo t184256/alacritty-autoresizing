@@ -16,7 +16,7 @@
             propagatedBuildInputs = with pkgs; [
               alacritty
               python3Packages.pyxdg
-              python3Packages.ruamel_yaml
+              python3Packages.toml
             ];
           };
           alacrittyAutoresizingEnv = pkgs.python3.buildEnv.override {

@@ -5,7 +5,7 @@ mkShell {
     (python3.withPackages (ps: with ps; [
       alacritty
       pyxdg
-      ruamel_yaml
+      toml
     ]))
   ];
 }

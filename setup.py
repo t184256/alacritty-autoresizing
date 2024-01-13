@@ -8,7 +8,7 @@ setup(
     author_email='monk@unboiled.info',
     description='Wrapper that makes alacritty terminal scale fonts on resize',
     py_modules=['alacritty_autoresizing'],
-    install_requires=['pyxdg', 'ruamel.yaml'],
+    install_requires=['pyxdg', 'toml'],
     entry_points='''
         [console_scripts]
         alacritty-autoresizing=alacritty_autoresizing:main

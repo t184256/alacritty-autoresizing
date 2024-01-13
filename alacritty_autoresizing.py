@@ -7,13 +7,13 @@ import subprocess
 import sys
 import tempfile
 
+import toml
 import xdg.BaseDirectory
-import ruamel.yaml
 
 
 def main():
     find_config = xdg.BaseDirectory.load_first_config
-    base_config = find_config('alacritty', 'alacritty.yml')
+    base_config = find_config('alacritty', 'alacritty.toml')
     resizing_config = find_config('alacritty', 'autoresizing.cfg.py')
     assert base_config is not None
     assert resizing_config is not None
@@ -21,13 +21,12 @@ def main():
                                                      delete=False).name
 
     with open(base_config) as f:
-        yaml = ruamel.yaml.YAML(typ='safe')
-        cfg = yaml.load(f)
+        cfg = toml.load(f)
 
     def update_config(font_params):
         with open(output_config_path, 'w') as output_config_file:
             cfg['font'].update(font_params)
-            yaml.dump(cfg, output_config_file)
+            toml.dump(cfg, output_config_file)
 
     update_config({})
 
