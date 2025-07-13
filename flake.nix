@@ -13,6 +13,8 @@
             pname = "alacritty-autoresizing";
             version = "0.0.1";
             src = ./.;
+            pyproject = true;
+            build-system = [ pkgs.python3Packages.setuptools ];
             propagatedBuildInputs = with pkgs; [
               alacritty
               python3Packages.pyxdg
